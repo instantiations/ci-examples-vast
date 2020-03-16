@@ -1,0 +1,5 @@
+Name=>UNIX
+Type=>UNIX
+SubsystemTypes=> (('OS'->'UNIX')('CLIM'->'ES')('CLDT'->'ES')('XDDB'->'UNIX')('CFS'->'POSIX')('SCI'->'UNIX')('CPM'->'ES'))
+Locale=>('english' 'us' 'ibm-819')
+Hide=>true

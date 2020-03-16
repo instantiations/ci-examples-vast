@@ -1,0 +1,203 @@
+PostStartUp !
+
+| configMapName instructionName versionName map pkgInstruction isXd relNotes packager |
+
+"See https://www.instantiations.com/docs/92/wwhelp/wwhimpl/js/html/wwhelp.htm#href=sg/stug515.html for the format of this file.  It is basically a FileOut format script that is run automatically once the image is started"
+
+" Send all output to the TTY which is then captured via the -l command line option"
+System image errorLog: TranscriptTTY default.
+Transcript := TranscriptTTY default.
+
+"Hijack message boxes so that they are not interactive"
+System image informer: TranscriptTTY default.
+
+"Parse the command line"
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: ' Parsing command line: ';
+    cr.
+System image commandLine do: [ :parm |
+    ('-map=*' match: parm)
+        ifTrue: [ configMapName := (parm abrSubstrings: $=) last ]
+        ifFalse: [ 
+            ('-pkg=*' match: parm) 
+                ifTrue: [ instructionName := (parm abrSubstrings: $=) last ]
+                ifFalse: [
+                    ('-ver=*' match: parm) 
+                        ifTrue: [ versionName := (parm abrSubstrings: $=) last ]
+				] 
+		] 
+].
+
+"Check the command line is supplied"
+"Note the reason System exit: is given 9001 as its errorCode is documented at https://www.instantiations.com/docs/91/wwhelp/wwhimpl/js/html/wwhelp.htm#href=pr/stpr472.html lower codes will result in a dialog box to be displayed"
+configMapName ifNil: [
+    System logError: 'Must supply config map name via -map option'.
+    System exit: 9001 withObject: nil
+].
+instructionName ifNil: [
+    System logError: 'Must supply packaging instruction via -pkg option'.
+    System exit: 9001 withObject: nil
+].
+
+"Convert the command line arguments into actual objects"
+versionName 
+	ifNil: [
+		"If no versionName is given on the command line, build the first (latest) edition for the given map - regardless of whether it is a version or not.  Used for nightly/dev builds"
+		map := (EmConfigurationMap editionsFor: configMapName) first.
+	]
+	ifNotNil: [
+		"If a versionName is given on the command line, select the first versioned edition that matches this name"
+		map :=
+			(EmConfigurationMap editionsFor: configMapName)
+				detect: [:each | (each isVersion) and: [each versionName abtContains: ('V', versionName)] ]
+				ifNone: [
+					System logError: ('No version can be found for config map "%1" matching %2' bindWithArguments: (Array with: configMapName with: versionName)).
+					System exit: 9001 withObject: nil
+				].
+	].
+
+pkgInstruction := Smalltalk classAt: instructionName asSymbol
+    ifAbsent: [
+        System logError: ('Cannot find packaging instructions "%1"' bindWith: instructionName).
+        System exit: 9001 withObject: nil.
+	].
+isXd := pkgInstruction inheritsFrom: AbtXDSingleImagePackagingInstructions.
+
+
+
+"Start the application build"
+
+
+" Output a release note file if the versionName was explicitly supplied (ie not a nightly)"
+versionName ifNotNil: [
+    (relNotes := CfsWriteFileStream openEmpty: configMapName, '.html') isCfsError
+        ifTrue: [System logError: relNotes message]
+        ifFalse: [
+            relNotes nextPutAll: ('<h1>%1</h1><p>Build Info:<br/>Build Date: %2</p><pre>' bindWithArguments: (Array with: map signature with: (AbtTimestamp now) printString)).
+            relNotes nextPutAll: map description.
+            relNotes nextPutAll: '</pre>'.
+            relNotes close.
+        ].
+].
+
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: ' Release Notes:';
+    cr;
+    show: map description;
+    cr.
+
+	
+
+isXd
+    ifTrue: [
+        | xdImage xdMap |
+        TranscriptTTY default
+            cr;
+            show: (AbtTimestamp now) printString;
+            show: ' Doing an XD based build';
+            cr.
+
+        "Switch to the XD image for UNIX"
+        (xdImage := EmImageManager targetNamed: 'UNIX')
+            ifNil: [
+                System logError: 'XD image called UNIX appears to be missing from master image'.
+                System exit: 9001 withObject: nil.
+            ].
+        xdImage switchTo.
+        
+        " Send the XD image transcript to the TTY - not worked out how to do this yet as lots of things assume the errorLog is an EtXDTranscript instance (or at least a CwShell instance)"
+        "xdImage passiveImage errorLog: TranscriptTTY default."
+        "Prevent load failures showing dialog boxes"
+        xdImage passiveImage informer: TranscriptTTY default.
+
+        "Load the config map in the XD Image"
+        "Even though we are loading the exact same config map into the XD image, we need a new instance of it as we need the config expressions to re-evaluate under the new image context and the config map instance remembers the requiredMaps"
+		xdMap :=
+			(EmConfigurationMap editionsFor: configMapName)
+				detect: [:each | each signature = map signature ]
+				ifNone: [
+					System logError: ('No version can be found for config map "%1" matching %2' bindWithArguments: (Array with: configMapName with: map signature)).
+					System exit: 9001 withObject: nil
+				].
+        TranscriptTTY default
+            cr;
+            show: (AbtTimestamp now) printString;
+            show: ' Loading config map ', xdMap signature, ' into XD image';
+            cr.
+        (xdMap loadWithRequiredMapsAndTracing: true)
+            ifFalse: [
+                System logError: ('Failed to load config map "%1" into XD Image' bindWith: xdMap signature).
+                System exit: 9001 withObject: nil.
+			].
+    ]
+    ifFalse: [
+        
+		TranscriptTTY default
+			cr;
+			show: (AbtTimestamp now) printString;
+			show: ' Loading config map edition ', map signature, ' into development image';
+			cr.	
+
+		"Load application config map into the main image"
+		(map loadWithRequiredMapsAndTracing: true)
+			ifFalse: [
+				System logError: ('Failed to load config map "%1" into development image' bindWith: map signature).
+				System exit: 9001 withObject: nil.
+			].
+			
+		"If you need to initialize anything in the windows image, you could do it here"	
+    ].
+
+" Package it "
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: ' Running packager';
+    cr.
+
+packager := pkgInstruction newPackager.
+(packager isValid)
+    ifTrue: [
+        (packager isKindOf: AbtEpPackager) ifTrue: [ 
+            "This turns off the prompting for the Initial Views that would happen if you packaged manually.  The instructions must be a subclass of AbtEpRuntimeImagePackagingInstructions and thus the packager an instance of AbtEpPackager for this to work.  This is only true for the Windows packagers"
+            packager neverRequired: true.
+		].
+        EpPackager addInMemoryPackager: packager.
+        (packager doWithProgressMessage: nil)
+            ifFalse: [
+                System logError: ('Failed to package application %1' bindWith: instructionName).
+                System exit: 9001 withObject: nil.
+			].
+        (packager problems notEmpty)
+            ifTrue: [
+                System logError: ('The following %1 packaging problem(s) were encountered:' bindWith: packager problems size printString).
+                TranscriptTTY default cr.
+                packager problems do: [ :each |
+                    TranscriptTTY default
+                        show: each shortDescription;
+                        cr.
+					].
+                "Currently we only exit if there are Fatal problems"
+                packager doFatalErrorsExist 
+                    ifTrue: [
+                        System exit: 9001 withObject: nil  
+                    ].
+            ].
+        EpPackager discardInMemoryPackager: packager.
+    ]
+    ifFalse: [
+        System logError: ('Failed to package application using instructions %1' bindWith: instructionName).
+        System exit: 9001 withObject: nil.
+    ].
+
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: (' Completed building "%1" with instructions "%2"' bindWithArguments: (Array with: map signature with: instructionName));
+    cr.
+
+System exit !

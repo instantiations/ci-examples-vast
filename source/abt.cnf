@@ -1,0 +1,149 @@
+" This is a startup script for taking a 'newimage' icx, loading in all the required features and making a build.icx which can be used for building application images"
+
+| userName replacementMethod |
+
+"Send the output to the TTY (-l command line option)"
+System errorLog: TranscriptTTY default.
+
+"Connect to the library"
+EmLibraryInterface startUp.
+
+"Prevent EtTools prompting to recache image pointers"
+EtTools recacheImage: false.
+
+"Turn off the quickstart view from showing"
+AbtQuickStartView showAtStartup: false.
+
+"Parse the command line"
+System image commandLine do: [ :parm |
+    ('-user=*' match: parm)
+        ifTrue: [ userName := (parm abrSubstrings: $=) last ] ].
+
+"Check the command line is supplied"
+userName ifNil: [
+    System logError: 'You must supply a user name who owns the image'.
+    System exit: 9001 withObject: nil].
+
+" Turn off prompting for a library password as currently there is no way to externally supply the password (EtTools class>>verifyUser always prompts)"
+replacementMethod :=
+    EmLibrary
+        basicCompile: 'isPasswordCheckingEnabled
+            ^false'
+        notifying: System errorLog
+        ifFail: [
+            System logError: 'Cannot turn off password checking'.
+            System exit: 9001 withObject: nil].
+EmLibrary methodDictionary at: #isPasswordCheckingEnabled put: replacementMethod.
+
+"Set the image owner"
+(EmUser classPool declareVariable: 'CurrentUser') value: (EmUser called: userName).
+
+" Connect to the library and synchronize the method pointers"
+System image connectImageToDefaultLibraryReportProgressTo: EmInterface current. !
+
+PostStartUp !
+
+| devMasterMap xdMasterMap map xdmap xdImage installFeatures manager |
+
+System errorLog: TranscriptTTY default.
+
+"Parse command line"
+System image commandLine do: [ :parm |
+    ('-map=*' match: parm)
+        ifTrue: [ devMasterMap := (parm abrSubstrings: $=) last ]
+        ifFalse: [ 
+            ('-xdmap=*' match: parm) 
+                ifTrue: [ xdMasterMap := (parm abrSubstrings: $=) last ] ] ].
+
+"Verify command line"
+devMasterMap isNil ifTrue: [
+    System logError: 'You must supply the name of a master config map to load'.
+    System exit: 9001 withObject: nil].
+
+map :=
+    (EmConfigurationMap editionsFor: devMasterMap)
+        detect: [:each | each isVersion]
+        ifNone: [
+            System logError: ('No version can be found for config map "%1"' bindWith: devMasterMap).
+            System exit: 9001 withObject: nil].
+
+xdMasterMap isNil ifFalse: [
+    xdmap := (EmConfigurationMap editionsFor: xdMasterMap)
+            detect: [:each | each isVersion]
+            ifNone: [
+                System logError: ('No version can be found for config map "%1"' bindWith: xdMasterMap).
+                System exit: 9001 withObject: nil].
+].
+
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: (' Loading config map %1 into development image' bindWith: devMasterMap);
+    cr.
+(map loadWithRequiredMapsAndTracing: true)
+    ifFalse: [
+        System logError: ('Failed to load config map "%1" into development image' bindWith: map versionName).
+        System exit: 9001 withObject: nil  ].
+
+" Create an XD image if a xdmap was supplied on the command line.  This requires that the devMasterMap include loading of the maps needed for XD support"
+xdmap isNil ifFalse: [
+    TranscriptTTY default
+        cr;
+        show: (AbtTimestamp now) printString;
+        show: ' Creating XD image for UNIX';
+        cr.
+    "As XD image creation support is not yet loaded whe this script is compiled, we have to use reflection references to the EmImageManager and the XD feature classes"
+    manager := Smalltalk classAt: 'EmImageManager' asSymbol.
+
+    "EmImageManager class>>createNewImageWithPropertiesFrom assumes the Transcript is a window so we cannot have TranscriptTTY in effect here"
+    System errorLog: Transcript.
+    manager createNewImageWithPropertiesFrom: 'UNIX.txt'.
+
+    xdImage := manager targetNamed: 'UNIX'.
+
+    "createNewImageWithPropertiesFrom - for some reason - reads the features to install from the file, but does not actually install them. So we do so manually now.  You only need this if your XD config map does not install all the features you need"
+    TranscriptTTY default
+        cr;
+        show: (AbtTimestamp now) printString;
+        show: ' Installing required features into XD Image';
+        cr.
+        
+    "As createNewImageWithPropertiesFrom does not load the features listed in the config file, you can list them here to get them loaded"
+    installFeatures := OrderedCollection new.
+    installFeatures 
+        add: (Smalltalk classAt: 'AbtSCIInteractiveDebuggerFeature' asSymbol) new;
+        add: (Smalltalk classAt: 'AbtSstSeasideFeature' asSymbol) new.
+    xdImage installFeatures: installFeatures.
+
+    xdImage switchTo.
+    
+    " Load the xdMasterMap config map in the XD image"
+    TranscriptTTY default
+        cr;
+        show: (AbtTimestamp now) printString;
+        show: (' Loading config map %1 into XD image' bindWith: xdMasterMap);
+        cr.
+    "Note that the tracing in the following is shown on the XD transcript - not into the TTY - I've not worked out how to direct it to the TTY"
+    (xdmap loadWithRequiredMapsAndTracing: true)
+        ifFalse: [
+            System logError: ('Failed to load config map "%1" into XD image' bindWith: xdmap versionName).
+            System exit: 9001 withObject: nil  ].
+
+    "Switch back to the development image"
+    (manager targetNamed: 'Development') switchTo.
+].
+
+"Set the startup script to build.cnf next time the image starts"
+EsImageStartUp configurationFileName: 'build.cnf'.
+
+"Save the constructed image to use for building other images"
+System imageFileName: 'build.icx'.
+System saveImage.
+
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: ' Finished master image creation';
+    cr.
+
+System exit!
