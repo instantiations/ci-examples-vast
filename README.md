@@ -25,11 +25,6 @@ The idea is to help others that may also want to automatically build their appli
 - The code is licensed under [MIT](LICENSE).
 - The documentation is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
 
-## Quick Start
-
-- Download [VAST (VA Smalltalk) 9.2.1](https://www.instantiations.com/products/vasmalltalk/download.html)
-- Blog posts to get you started:
-  - [Automatically building Application Images via Jenkins/CLI](http://forum.world.st/Automatically-building-Application-Images-via-Jenkins-CLI-td5109957.html)
 
 ## General Requirements
 
@@ -128,13 +123,13 @@ You could have one build job to create the `build.icx` which is then archived as
 
 
 
-
 ## Acknowledgments
 
-- David Gregory and [Trapeze Group](https://trapezegroup.com.au/) for making the first pass of this project, the documentation, and for kindly sharing it with the community with an open-source license.  
+- David Gregory and [Trapeze Group](https://trapezegroup.com.au/) for making [the first pass of this project, the documentation, and for kindly sharing it with the community](http://forum.world.st/Automatically-building-Application-Images-via-Jenkins-CLI-td5109957.html) with an open-source license.  
 - Thomas Koschate and Marten Feldtmann for the [Automated Build Support](http://vastgoodies.com/projects/Automated%2520Build%2520Support) project which showed the main techniques and proved it could be done.
 - [Thomas Koschate’s 11 part blog series on packaging](https://omasko.wordpress.com/2011/03/27/improving-the-development-process-part-1-setting-the-scene/) which provided some explanations.
 - Louis Barunda and [his post about Seaside XD packaging](https://groups.google.com/forum/#!msg/va-smalltalk/5_N1LYHsfxg/FMj1Ae2DCwAJ).
+- [Mercap Software](https://github.com/Mercap) for show sharing code, ideas and fixes.
 - Github repository layout was generated with [Ba-St Github-setup project](https://github.com/ba-st/GitHub-setup).
 
 
