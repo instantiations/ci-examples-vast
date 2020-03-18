@@ -68,7 +68,11 @@ isXd := pkgInstruction inheritsFrom: AbtXDSingleImagePackagingInstructions.
 
 
 "Start the application build"
-
+TranscriptTTY default
+    cr;
+    show: (AbtTimestamp now) printString;
+    show: ' Loading config map edition ', map signature, ' into development image';
+    cr.
 
 " Output a release note file if the versionName was explicitly supplied (ie not a nightly)"
 versionName ifNotNil: [
@@ -90,6 +94,12 @@ TranscriptTTY default
     show: map description;
     cr.
 
+"Load application config map into the main image"
+(map loadWithRequiredMapsAndTracing: true)
+    ifFalse: [
+        System logError: ('Failed to load config map "%1" into development image' bindWith: map signature).
+        System exit: 9001 withObject: nil.
+	].
 	
 
 isXd
@@ -135,20 +145,6 @@ isXd
 			].
     ]
     ifFalse: [
-        
-		TranscriptTTY default
-			cr;
-			show: (AbtTimestamp now) printString;
-			show: ' Loading config map edition ', map signature, ' into development image';
-			cr.	
-
-		"Load application config map into the main image"
-		(map loadWithRequiredMapsAndTracing: true)
-			ifFalse: [
-				System logError: ('Failed to load config map "%1" into development image' bindWith: map signature).
-				System exit: 9001 withObject: nil.
-			].
-			
 		"If you need to initialize anything in the windows image, you could do it here"	
     ].
 
