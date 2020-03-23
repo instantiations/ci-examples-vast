@@ -121,6 +121,12 @@ The second tip is that it is not easily possible to run the packager in a purely
 
 You could have one build job to create the `build.icx` which is then archived as an artifact by Jenkins. The application image build jobs then copy this artifact as part of the application image build jobs. The output images could then be fed to build jobs that do the final packaging and distribution (eg with the VA smalltalk runtime DLLs, pictures and related resources).
 
+## Future work
+
+- Run tests and ouput JUnit XML format.
+- Provide Jenkins job demo for Seaside Traffic Light.
+- Improve VAST to minimize required changes in the process.
+- Analyze how this related with [Tonel](https://github.com/vasmalltalk/tonel-vast) and [Smalltalk CI](https://github.com/hpi-swa/smalltalkCI) 
 
 
 ## Acknowledgments
