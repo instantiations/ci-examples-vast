@@ -30,7 +30,7 @@ The idea is to help others that may also want to automatically build their appli
 
 This system is only a part of the solution and relies on you having configuration maps containing everything you need to create your application (including dependencies). If you don't have these already, it cannot really help too much as this is a per-requisite of this solution. Basically, you need to be able to build your applications manually from a clean 'new' image to then automate the process.
 
-The provided example assumes that Windows is the primary build environment and that UNIX is the XD environment. If Linux is your primary build environment, you would only have to adapt the batch scripts to shell scripts and change the UNIX.txt file (which defines the XD image properties) to be a different platform.
+The provided example assumes Windows is the primary build environment and UNIX is the XD environment. If Linux is your primary build environment, you would only have to adapt the batch scripts to shell scripts and change the UNIX.txt file (which defines the XD image properties) to be a different platform.
 
 This build system also assumes VAST 9.2.1 although the only thing that makes that assumption is the paths used in the batch files. However, this will work in any VA version >= 8.6.2 (where the [PostStartUp capability in image startup scripts exists](https://www.instantiations.com/docs/91/sg/wwhelp/wwhimpl/common/html/wwhelp.htm#href=stug515.html&single=true)). You just have to change the paths to `nodialog.exe` and `newimage\abt.icx` to match your installation.
 
