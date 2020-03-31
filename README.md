@@ -98,9 +98,10 @@ The provided scripts in this repository are prepare to build and package the "Se
 
 ### Setup
 
-Decide which ENVY manager you want to use (should be based on 9.2.1 for this example) and copy a correct configured `abt.ini` into your local clone of this repo.
+Decide which ENVY manager you want to use (should be based on 9.2.1 for this example) and copy a correct configured `abt.ini` (that points to the manager to use) into your local clone of this repo.
 
 Import and load the maps `Seaside Traffic Light XD` and `Seaside Traffic Light Builder` from [`SeasideTrafficLightMaps.dat`](envy/SeasideTrafficLightMaps.dat) into the selected manager.
+
 
 ### Running
 
@@ -126,7 +127,7 @@ You could have one build job to create the `build.icx` which is then archived as
 - Run tests and ouput JUnit XML format.
 - Provide Jenkins job demo for Seaside Traffic Light.
 - Improve VAST to minimize required changes in the process.
-- Analyze how this related with [Tonel](https://github.com/vasmalltalk/tonel-vast) and [Smalltalk CI](https://github.com/hpi-swa/smalltalkCI) 
+- Analyze how this related with [Tonel](https://github.com/vasmalltalk/tonel-vast) and [Smalltalk CI](https://github.com/hpi-swa/smalltalkCI)
 
 
 ## Acknowledgments

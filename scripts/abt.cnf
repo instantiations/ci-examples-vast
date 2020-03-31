@@ -51,8 +51,8 @@ System errorLog: TranscriptTTY default.
 System image commandLine do: [ :parm |
     ('-map=*' match: parm)
         ifTrue: [ devMasterMap := (parm abrSubstrings: $=) last ]
-        ifFalse: [ 
-            ('-xdmap=*' match: parm) 
+        ifFalse: [
+            ('-xdmap=*' match: parm)
                 ifTrue: [ xdMasterMap := (parm abrSubstrings: $=) last ] ] ].
 
 "Verify command line"
@@ -75,11 +75,20 @@ xdMasterMap isNil ifFalse: [
                 System exit: 9001 withObject: nil].
 ].
 
+
+
+"Load Tonel support"
+"StsConfigurationMapsBrowser new importAllConfigMapsFrom: ((CfsPath named: CfsDirectoryDescriptor getcwd) append: '..\envy\Tonel.dat') asString."
+(EmConfigurationMap editionsFor: 'Tonel') first loadWithRequiredMaps.
+
+
+"Load builder map"
 TranscriptTTY default
     cr;
     show: (AbtTimestamp now) printString;
     show: (' Loading config map %1 into development image' bindWith: devMasterMap);
     cr.
+"REPLACE WITH TONEL"
 (map loadWithRequiredMapsAndTracing: true)
     ifFalse: [
         System logError: ('Failed to load config map "%1" into development image' bindWith: map versionName).
@@ -107,22 +116,23 @@ xdmap isNil ifFalse: [
         show: (AbtTimestamp now) printString;
         show: ' Installing required features into XD Image';
         cr.
-        
+
     "As createNewImageWithPropertiesFrom does not load the features listed in the config file, you can list them here to get them loaded"
     installFeatures := OrderedCollection new.
-    installFeatures 
+    installFeatures
         add: (Smalltalk classAt: 'AbtSCIInteractiveDebuggerFeature' asSymbol) new;
         add: (Smalltalk classAt: 'AbtSstSeasideFeature' asSymbol) new.
     xdImage installFeatures: installFeatures.
 
     xdImage switchTo.
-    
+
     " Load the xdMasterMap config map in the XD image"
     TranscriptTTY default
         cr;
         show: (AbtTimestamp now) printString;
         show: (' Loading config map %1 into XD image' bindWith: xdMasterMap);
         cr.
+      "REPLACE WITH TONEL"
     "Note that the tracing in the following is shown on the XD transcript - not into the TTY - I've not worked out how to direct it to the TTY"
     (xdmap loadWithRequiredMapsAndTracing: true)
         ifFalse: [

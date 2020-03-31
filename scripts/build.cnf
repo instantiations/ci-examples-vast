@@ -20,14 +20,14 @@ TranscriptTTY default
 System image commandLine do: [ :parm |
     ('-map=*' match: parm)
         ifTrue: [ configMapName := (parm abrSubstrings: $=) last ]
-        ifFalse: [ 
-            ('-pkg=*' match: parm) 
+        ifFalse: [
+            ('-pkg=*' match: parm)
                 ifTrue: [ instructionName := (parm abrSubstrings: $=) last ]
                 ifFalse: [
-                    ('-ver=*' match: parm) 
+                    ('-ver=*' match: parm)
                         ifTrue: [ versionName := (parm abrSubstrings: $=) last ]
-				] 
-		] 
+				]
+		]
 ].
 
 "Check the command line is supplied"
@@ -42,7 +42,7 @@ instructionName ifNil: [
 ].
 
 "Convert the command line arguments into actual objects"
-versionName 
+versionName
 	ifNil: [
 		"If no versionName is given on the command line, build the first (latest) edition for the given map - regardless of whether it is a version or not.  Used for nightly/dev builds"
 		map := (EmConfigurationMap editionsFor: configMapName) first.
@@ -100,7 +100,7 @@ TranscriptTTY default
         System logError: ('Failed to load config map "%1" into development image' bindWith: map signature).
         System exit: 9001 withObject: nil.
 	].
-	
+
 
 isXd
     ifTrue: [
@@ -118,7 +118,7 @@ isXd
                 System exit: 9001 withObject: nil.
             ].
         xdImage switchTo.
-        
+
         " Send the XD image transcript to the TTY - not worked out how to do this yet as lots of things assume the errorLog is an EtXDTranscript instance (or at least a CwShell instance)"
         "xdImage passiveImage errorLog: TranscriptTTY default."
         "Prevent load failures showing dialog boxes"
@@ -138,6 +138,7 @@ isXd
             show: (AbtTimestamp now) printString;
             show: ' Loading config map ', xdMap signature, ' into XD image';
             cr.
+            "TONEL"
         (xdMap loadWithRequiredMapsAndTracing: true)
             ifFalse: [
                 System logError: ('Failed to load config map "%1" into XD Image' bindWith: xdMap signature).
@@ -145,7 +146,7 @@ isXd
 			].
     ]
     ifFalse: [
-		"If you need to initialize anything in the windows image, you could do it here"	
+		"If you need to initialize anything in the windows image, you could do it here"
     ].
 
 " Package it "
@@ -158,7 +159,7 @@ TranscriptTTY default
 packager := pkgInstruction newPackager.
 (packager isValid)
     ifTrue: [
-        (packager isKindOf: AbtEpPackager) ifTrue: [ 
+        (packager isKindOf: AbtEpPackager) ifTrue: [
             "This turns off the prompting for the Initial Views that would happen if you packaged manually.  The instructions must be a subclass of AbtEpRuntimeImagePackagingInstructions and thus the packager an instance of AbtEpPackager for this to work.  This is only true for the Windows packagers"
             packager neverRequired: true.
 		].
@@ -178,9 +179,9 @@ packager := pkgInstruction newPackager.
                         cr.
 					].
                 "Currently we only exit if there are Fatal problems"
-                packager doFatalErrorsExist 
+                packager doFatalErrorsExist
                     ifTrue: [
-                        System exit: 9001 withObject: nil  
+                        System exit: 9001 withObject: nil
                     ].
             ].
         EpPackager discardInMemoryPackager: packager.

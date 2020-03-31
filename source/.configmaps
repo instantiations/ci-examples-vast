@@ -1,0 +1,42 @@
+[
+	{
+		#applications : [
+			'SeasideTrafficLightPackagingInstructionsApp' : '1.4'
+		],
+		#conditions : [
+			{
+				#condition : 'true',
+				#requiredMaps : [
+					'z.ST: Server Smalltalk (SST) - Seaside' : 'V 9.2.1  [457]',
+					'z.ST: Server, SST' : 'V 9.2.1  [457]',
+					'ENVY/Image Batch Runtime' : 'V 6.0.0  [43]'
+				]
+			}
+		],
+		#name : 'Seaside Traffic Light Builder',
+		#versionName : '1.1',
+		#comment : ''
+	},
+	{
+		#applications : [
+			'EsStackDumperSupport' : 'b427 + 64208 a',
+			'SeasideTrafficLight' : '1.18-remoteDebug'
+		],
+		#conditions : [
+			{
+				#condition : 'true',
+				#requiredMaps : [ ]
+			}
+		],
+		#name : 'Seaside Traffic Light Runtime',
+		#versionName : '2.5',
+		#comment : ''
+	},
+	{
+		#applications : [ ],
+		#conditions : [ ],
+		#name : 'Seaside Traffic Light XD',
+		#versionName : '1.0',
+		#comment : ''
+	}
+]
