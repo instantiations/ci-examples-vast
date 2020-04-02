@@ -98,10 +98,7 @@ The provided scripts in this repository are prepare to build and package the "Se
 
 ### Setup
 
-Decide which ENVY manager you want to use (should be based on 9.2.1 for this example) and copy a correct configured `abt.ini` (that points to the manager to use) into your local clone of this repo.
-
-Import and load the maps `Seaside Traffic Light XD` and `Seaside Traffic Light Builder` from [`SeasideTrafficLightMaps.dat`](envy/SeasideTrafficLightMaps.dat) into the selected manager.
-
+Decide which ENVY manager you want to use (should be based on 9.2.1 for this example) and copy a correct configured `abt.ini` (that points to the manager to use) into your local clone of this repo. The only requirement for this demo is that the `Tonel` map from [`Tonel.dat`](envy/Tonel.dat) should have been previously imported into the selected manager.
 
 ### Running
 

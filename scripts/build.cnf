@@ -95,6 +95,7 @@ TranscriptTTY default
     cr.
 
 "Load application config map into the main image"
+" This shouldnt be necessary when using Tonel as #loadAllMapsWithRequiredMaps from abt.cnf should have already loaded the maps into the image"
 (map loadWithRequiredMapsAndTracing: true)
     ifFalse: [
         System logError: ('Failed to load config map "%1" into development image' bindWith: map signature).
@@ -138,7 +139,7 @@ isXd
             show: (AbtTimestamp now) printString;
             show: ' Loading config map ', xdMap signature, ' into XD image';
             cr.
-            "TONEL"
+        "This should be necessary whether we used Tonel or not"
         (xdMap loadWithRequiredMapsAndTracing: true)
             ifFalse: [
                 System logError: ('Failed to load config map "%1" into XD Image' bindWith: xdMap signature).

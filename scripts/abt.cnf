@@ -43,7 +43,7 @@ System image connectImageToDefaultLibraryReportProgressTo: EmInterface current. 
 
 PostStartUp !
 
-| devMasterMap xdMasterMap map xdmap xdImage installFeatures manager |
+| devMasterMap xdMasterMap map xdmap xdImage installFeatures manager loader |
 
 System errorLog: TranscriptTTY default.
 
@@ -59,6 +59,22 @@ System image commandLine do: [ :parm |
 devMasterMap isNil ifTrue: [
     System logError: 'You must supply the name of a master config map to load'.
     System exit: 9001 withObject: nil].
+
+
+
+
+"Load Tonel support"
+"  StsConfigurationMapsBrowser new importAllConfigMapsFrom: ((CfsPath named: CfsDirectoryDescriptor getcwd) append: '..\envy\Tonel.dat') asString."
+System logNotice: 'Loading Tonel'.
+(EmConfigurationMap editionsFor: 'Tonel') first loadWithRequiredMaps.
+
+System logNotice: ('Loading maps from path "%1"' bindWith: ((CfsPath named: CfsDirectoryDescriptor getcwd) append: '..\') asString).
+loader := (Smalltalk classAt: 'TonelLoader' asSymbol) readFromPath:  ((CfsPath named: CfsDirectoryDescriptor getcwd) append: '..\').
+loader
+	beUnattended;
+	useGitVersion.
+loader loadAllMapsWithRequiredMaps.
+
 
 map :=
     (EmConfigurationMap editionsFor: devMasterMap)
@@ -77,10 +93,6 @@ xdMasterMap isNil ifFalse: [
 
 
 
-"Load Tonel support"
-"StsConfigurationMapsBrowser new importAllConfigMapsFrom: ((CfsPath named: CfsDirectoryDescriptor getcwd) append: '..\envy\Tonel.dat') asString."
-(EmConfigurationMap editionsFor: 'Tonel') first loadWithRequiredMaps.
-
 
 "Load builder map"
 TranscriptTTY default
@@ -88,7 +100,8 @@ TranscriptTTY default
     show: (AbtTimestamp now) printString;
     show: (' Loading config map %1 into development image' bindWith: devMasterMap);
     cr.
-"REPLACE WITH TONEL"
+
+" This shouldnt be necessary when using Tonel as #loadAllMapsWithRequiredMaps should have already loaded the maps into the image"
 (map loadWithRequiredMapsAndTracing: true)
     ifFalse: [
         System logError: ('Failed to load config map "%1" into development image' bindWith: map versionName).
