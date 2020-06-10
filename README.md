@@ -1,6 +1,6 @@
 <p align="center">
 <!---<img src="assets/logos/128x128.png">-->
- <h1 align="center">Continuous Integration Examples for VASmalltalk</h1>
+ <h1 align="center">Continuous Integration Examples for VAST Platform (VA Smalltalk)</h1>
   <p align="center">
     Implementing Continuous Integration with VA Smalltalk!
     <!---
@@ -16,7 +16,7 @@
 </p>
 
 
-The system presented here can be used for automatically building VASmalltalk images for custom applications from Jenkins as well as manually from the command line (if developers want an ad-hoc image for testing). In other words, provide repeatable and automated image creation so that anyone could do it and do it quickly.
+The system presented here can be used for automatically building VA Smalltalk images for custom applications from Jenkins as well as manually from the command line (if developers want an ad-hoc image for testing). In other words, provide repeatable and automated image creation so that anyone could do it and do it quickly.
 
 The idea is to help others that may also want to automatically build their applications images and thus to get community co-operation in improving this system so we can all benefit.  
 
