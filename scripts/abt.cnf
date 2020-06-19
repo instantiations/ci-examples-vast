@@ -76,6 +76,12 @@ loader
 loader loadAllMapsWithRequiredMaps.
 
 
+
+"Uncomment if you want to profile the packager"
+(EmConfigurationMap editionsFor: 'z.ST: Performance Workbench') first loadWithRequiredMaps.
+
+
+
 map :=
     (EmConfigurationMap editionsFor: devMasterMap)
         detect: [:each | each isVersion]

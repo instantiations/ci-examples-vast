@@ -150,6 +150,10 @@ isXd
 		"If you need to initialize anything in the windows image, you could do it here"
     ].
 
+
+"Uncomment below line and the end of the block if you want to profile"
+(EsbSampler spyOn: [
+
 " Package it "
 TranscriptTTY default
     cr;
@@ -191,6 +195,11 @@ packager := pkgInstruction newPackager.
         System logError: ('Failed to package application using instructions %1' bindWith: instructionName).
         System exit: 9001 withObject: nil.
     ].
+
+
+ ]) browse.
+Halt halt.  
+
 
 TranscriptTTY default
     cr;
