@@ -8,6 +8,20 @@ Class {
 }
 
 { #category : 'ES-Internal' }
+EsStackDumperSupport class >> _PRAGMA_NlsCatESj [
+
+	"%%PRAGMA DECLARE
+	(name: NlsCatESj isPool: true pragma: 'NLS esj')
+	(pool: NlsCatESj declarations: (
+		(name: MxESj1 comment: 'Dumping Stack File %1 ...')
+		(name: MxESj2 comment: '...Finished Dumping Stack File %1')
+		(name: MxESj3 comment: 'Unknown Error')
+	))
+	"
+
+]
+
+{ #category : 'ES-Internal' }
 EsStackDumperSupport class >> loaded [
 
 	"The application has just been loaded :

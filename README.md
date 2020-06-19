@@ -32,7 +32,7 @@ This system is only a part of the solution and relies on you having configuratio
 
 The provided example assumes Windows is the primary build environment and UNIX is the XD environment. If Linux is your primary build environment, you would only have to adapt the batch scripts to shell scripts and change the UNIX.txt file (which defines the XD image properties) to be a different platform.
 
-This build system also assumes VAST 9.2.1 although the only thing that makes that assumption is the paths used in the batch files. However, this will work in any VA version >= 8.6.2 (where the [PostStartUp capability in image startup scripts exists](https://www.instantiations.com/docs/91/sg/wwhelp/wwhimpl/common/html/wwhelp.htm#href=stug515.html&single=true)). You just have to change the paths to `nodialog.exe` and `newimage\abt.icx` to match your installation.
+This build system also assumes VAST 9.2.2 although the only thing that makes that assumption is the paths used in the batch files. However, this will work in any VA version >= 8.6.2 (where the [PostStartUp capability in image startup scripts exists](https://www.instantiations.com/docs/91/sg/wwhelp/wwhimpl/common/html/wwhelp.htm#href=stug515.html&single=true)). You just have to change the paths to `nodialog.exe` and `newimage\abt.icx` to match your installation.
 
 
 ## Getting Started
@@ -94,11 +94,11 @@ You will (hopefully) get all the outputs configured in your packaging instructio
 
 ## Seaside Traffic Light Example
 
-The provided scripts in this repository are prepare to build and package the "Seaside Traffic Light" example shipped with VA 9.2.1 out of the box.
+The provided scripts in this repository are prepare to build and package the "Seaside Traffic Light" example shipped with VA 9.2.2 out of the box.
 
 ### Setup
 
-Decide which ENVY manager you want to use (should be based on 9.2.1 for this example) and copy a correct configured `abt.ini` (that points to the manager to use) into your local clone of this repo. The only requirement for this demo is that the `Tonel` map from [`Tonel.dat`](envy/Tonel.dat) should have been previously imported into the selected manager.
+Decide which ENVY manager you want to use (should be based on 9.2.2 for this example) and copy a correct configured `abt.ini` (that points to the manager to use) into your local clone of this repo. The only requirement for this demo is that the `Tonel` map from [`Tonel.dat`](envy/Tonel.dat) should have been previously imported into the selected manager.
 
 ### Running
 

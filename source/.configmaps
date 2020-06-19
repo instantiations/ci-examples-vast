@@ -1,42 +1,72 @@
 [
 	{
-		#applications : [
-			'SeasideTrafficLightPackagingInstructionsApp' : '1.4'
-		],
 		#conditions : [
 			{
 				#condition : 'true',
 				#requiredMaps : [
-					'z.ST: Server Smalltalk (SST) - Seaside' : 'V 9.2.1  [457]',
-					'z.ST: Server, SST' : 'V 9.2.1  [457]',
-					'ENVY/Image Batch Runtime' : 'V 6.0.0  [43]'
+					{
+						#name : 'z.ST: Server Smalltalk (SST) - Seaside',
+						#versionName : 'V 9.2.2  [002]',
+						#ts : 3768827234
+					},
+					{
+						#name : 'z.ST: Server, SST',
+						#versionName : 'V 9.2.2  [002]',
+						#ts : 3768827234
+					},
+					{
+						#name : 'ENVY/Image Batch Runtime',
+						#versionName : 'V 6.0.0  [43]',
+						#ts : 3192436167
+					}
 				]
 			}
 		],
+		#ts : 3770019019,
+		#comment : '',
+		#formatVersion : '1.1',
+		#applications : OrderedCollection [
+			{
+				#name : 'SeasideTrafficLightPackagingInstructionsApp',
+				#versionName : '1.4',
+				#ts : 3743251942
+			}
+		],
 		#name : 'Seaside Traffic Light Builder',
-		#versionName : '1.1',
-		#comment : ''
+		#versionName : '1.2'
 	},
 	{
-		#applications : [
-			'EsStackDumperSupport' : 'b427 + 64208 a',
-			'SeasideTrafficLight' : '1.18-remoteDebug'
-		],
 		#conditions : [
 			{
 				#condition : 'true',
 				#requiredMaps : [ ]
 			}
 		],
+		#ts : 3746100334,
+		#comment : '',
+		#formatVersion : '1.1',
+		#applications : OrderedCollection [
+			{
+				#name : 'EsStackDumperSupport',
+				#versionName : 'b427 + 64208 a',
+				#ts : 3718456329
+			},
+			{
+				#name : 'SeasideTrafficLight',
+				#versionName : '1.18-remoteDebug',
+				#ts : 3745869967
+			}
+		],
 		#name : 'Seaside Traffic Light Runtime',
-		#versionName : '2.5',
-		#comment : ''
+		#versionName : '2.5'
 	},
 	{
-		#applications : [ ],
 		#conditions : [ ],
+		#ts : 3761815952,
+		#comment : '',
+		#formatVersion : '1.1',
+		#applications : OrderedCollection [ ],
 		#name : 'Seaside Traffic Light XD',
-		#versionName : '1.0',
-		#comment : ''
+		#versionName : '1.0'
 	}
 ]
